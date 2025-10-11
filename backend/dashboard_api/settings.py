@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,12 +21,25 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-kc888s^t^y(c13$9l^tv9#f0a@jxez*0xm(6d2fdjzh7u4ouhs'
+# In a real production app, this should be loaded from an environment variable.
+SECRET_KEY = 'django-insecure-YOUR_SECRET_KEY_HERE' # Replace with your actual key if you want
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# This automatically sets DEBUG to False when deployed on Render.
+DEBUG = os.environ.get('RENDER') != 'true'
 
+# --- ALLOWED_HOSTS Configuration ---
+# This is a crucial security setting.
 ALLOWED_HOSTS = []
+
+# Get the hostname from the RENDER_EXTERNAL_HOSTNAME environment variable
+# that is automatically set by Render.
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
+# Also allow localhost for local development
+ALLOWED_HOSTS.append('127.0.0.1')
 
 
 # Application definition
@@ -42,14 +56,16 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
 
-    # Our local apps
+    # Your local app
     'api',
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # --- CORS MIDDLEWARE ---
+    # Must be placed above CommonMiddleware
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -66,6 +82,7 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -88,22 +105,19 @@ DATABASES = {
 }
 
 
+# --- CORS CONFIGURATION (FIXES THE NETWORKERROR) ---
+# This tells your backend which frontend domains are allowed to make requests.
+CORS_ALLOWED_ORIGINS = [
+    "https://qualitative-dashboard-8xn6nes6f.vercel.app", # Your Vercel URL
+    "http://localhost:3000",                             # For local development
+]
+
+
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    # ... (default password validators) ...
 ]
 
 
@@ -111,11 +125,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
 
@@ -128,7 +139,3 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-]
