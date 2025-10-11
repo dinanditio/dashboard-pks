@@ -21,19 +21,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# In a real production app, this should be loaded from an environment variable.
-SECRET_KEY = 'django-insecure-YOUR_SECRET_KEY_HERE' # Replace with your actual key if you want
+SECRET_KEY = 'django-insecure-YOUR_SECRET_KEY_HERE'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# This automatically sets DEBUG to False when deployed on Render.
 DEBUG = os.environ.get('RENDER') != 'true'
 
 # --- ALLOWED_HOSTS Configuration ---
-# This is a crucial security setting.
 ALLOWED_HOSTS = []
 
-# Get the hostname from the RENDER_EXTERNAL_HOSTNAME environment variable
-# that is automatically set by Render.
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
@@ -63,7 +58,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    # --- CORS MIDDLEWARE ---
     # Must be placed above CommonMiddleware
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -108,8 +102,8 @@ DATABASES = {
 # --- CORS CONFIGURATION (FIXES THE NETWORKERROR) ---
 # This tells your backend which frontend domains are allowed to make requests.
 CORS_ALLOWED_ORIGINS = [
-    "https://qualitative-dashboard-8xn6nes6f.vercel.app", # Your Vercel URL
-    "http://localhost:3000",                             # For local development
+    "https://pks-dashboard.vercel.app", # <-- URL ANDA YANG BARU
+    "http://localhost:3000",             # Untuk development lokal
 ]
 
 
