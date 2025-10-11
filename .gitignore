@@ -9,3 +9,4 @@ backend/dashboard_api/__pycache__/
 frontend/.next/
 frontend/node_modules/
 frontend/.env.local
+.vercel
