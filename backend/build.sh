@@ -7,3 +7,6 @@ pip install -r requirements.txt
 
 # 2. Run database migrations
 python manage.py migrate
+
+# 3. Load the initial data from the JSON file
+python manage.py loaddata initial_data.json
