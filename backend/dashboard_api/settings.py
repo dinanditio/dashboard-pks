@@ -102,7 +102,7 @@ DATABASES = {
 # --- CORS CONFIGURATION (FIXES THE NETWORKERROR) ---
 # This tells your backend which frontend domains are allowed to make requests.
 CORS_ALLOWED_ORIGINS = [
-    "https://pks-dashboard.vercel.app", # <-- URL ANDA YANG BARU
+    "https://medmontim.vercel.app", # <-- URL ANDA YANG BARU
     "http://localhost:3000",             # Untuk development lokal
 ]
 
