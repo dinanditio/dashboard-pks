@@ -4,8 +4,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from collections import Counter
 
-from .models import Report
-from .serializers import ReportSerializer, ReportListSerializer
+# Tambahkan CommissionIssueSummary ke impor model
+from .models import Report, CommissionIssueSummary
+# Tambahkan CommissionIssueSummarySerializer ke impor serializer
+from .serializers import ReportSerializer, ReportListSerializer, CommissionIssueSummarySerializer
 
 class ReportViewSet(viewsets.ViewSet):
     """
@@ -19,7 +21,7 @@ class ReportViewSet(viewsets.ViewSet):
     def retrieve(self, request, pk=None):
         queryset = Report.objects.all()
         report = get_object_or_404(queryset, pk=pk)
-        serializer = ReportSerializer(report)
+        serializer = ReportSerializer(report) # ReportSerializer sekarang termasuk commission_summaries
         return Response(serializer.data)
 
 class StakeholderFrequencyView(APIView):
@@ -80,3 +82,25 @@ class SentimentAnalysisView(APIView):
             return Response(response_data)
         except Report.DoesNotExist:
             return Response({"error": "Report not found"}, status=404)
+
+# --- VIEW BARU UNTUK RINGKASAN KOMISI ---
+class CommissionSummaryView(APIView):
+    """
+    API view untuk mendapatkan ringkasan isu per komisi untuk laporan spesifik.
+    """
+    def get(self, request, report_id, format=None):
+        try:
+            # Filter berdasarkan report_id, order by field 'order'
+            summaries = CommissionIssueSummary.objects.filter(report_id=report_id).order_by('order', 'commission_name')
+            if not summaries.exists():
+                return Response([]) # Kembalikan list kosong jika tidak ada data
+            serializer = CommissionIssueSummarySerializer(summaries, many=True)
+            return Response(serializer.data)
+        # Tangkap error spesifik jika report_id tidak valid (meskipun filter() biasanya aman)
+        except Report.DoesNotExist:
+             return Response({"error": "Report not found"}, status=404)
+        # Tangkap error umum lainnya
+        except Exception as e:
+            # Sebaiknya log error ini di sistem logging Anda
+            # print(f"Error fetching commission summary: {e}")
+            return Response({"error": "Internal server error while fetching commission summary."}, status=500)

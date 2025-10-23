@@ -1,25 +1,26 @@
-# backend/api/serializers.py
-
 from rest_framework import serializers
-from .models import Report, Issue, KeyPoint, Stakeholder, Tag
+# Tambahkan CommissionIssueSummary ke daftar import
+from .models import Report, Issue, KeyPoint, Stakeholder, Tag, CommissionIssueSummary
 
-# Serializer untuk KeyPoint, Stakeholder, dan Tag (tidak berubah)
+# Serializer untuk KeyPoint
 class KeyPointSerializer(serializers.ModelSerializer):
     class Meta:
         model = KeyPoint
         fields = ['text', 'sentiment']
 
+# Serializer untuk Stakeholder
 class StakeholderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Stakeholder
         fields = ['name']
 
+# Serializer untuk Tag
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ['name']
 
-# Serializer untuk menampilkan Isu secara detail
+# Serializer untuk Issue (detail)
 class IssueSerializer(serializers.ModelSerializer):
     key_points = KeyPointSerializer(many=True, read_only=True)
     stakeholders = StakeholderSerializer(many=True, read_only=True)
@@ -29,18 +30,25 @@ class IssueSerializer(serializers.ModelSerializer):
         model = Issue
         fields = ['issue_number', 'title', 'stakeholders', 'key_points', 'tags']
 
-# --- KODE BARU DIMULAI DI SINI ---
-
-# Serializer untuk daftar laporan (lebih ringan, tidak perlu detail isu)
+# Serializer untuk daftar Report (ringkas)
 class ReportListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Report
         fields = ['id', 'title', 'start_date', 'end_date']
 
-# Serializer untuk menampilkan satu laporan secara lengkap dengan semua isunya
+# --- SERIALIZER BARU UNTUK RINGKASAN KOMISI ---
+class CommissionIssueSummarySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CommissionIssueSummary
+        # Hanya sertakan field yang dibutuhkan oleh frontend accordion
+        fields = ['commission_name', 'issue_1_title', 'issue_2_title']
+
+# Serializer untuk Report (detail, termasuk isu dan ringkasan komisi)
 class ReportSerializer(serializers.ModelSerializer):
     issues = IssueSerializer(many=True, read_only=True)
+    # Kita tambahkan juga ringkasan komisi ke detail laporan
+    commission_summaries = CommissionIssueSummarySerializer(many=True, read_only=True)
 
     class Meta:
         model = Report
-        fields = ['id', 'title', 'start_date', 'end_date', 'issues']
+        fields = ['id', 'title', 'start_date', 'end_date', 'issues', 'commission_summaries'] # Tambahkan commission_summaries

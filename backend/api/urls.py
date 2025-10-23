@@ -4,7 +4,8 @@ from .views import (
     ReportViewSet,
     StakeholderFrequencyView,
     TagFrequencyView,
-    SentimentAnalysisView
+    SentimentAnalysisView,
+    CommissionSummaryView # <-- Tambahkan impor view baru
 )
 
 router = DefaultRouter()
@@ -18,4 +19,7 @@ urlpatterns = [
     path('reports/<int:report_id>/stakeholder-frequency/', StakeholderFrequencyView.as_view(), name='stakeholder-frequency'),
     path('reports/<int:report_id>/tag-frequency/', TagFrequencyView.as_view(), name='tag-frequency'),
     path('reports/<int:report_id>/sentiment-analysis/', SentimentAnalysisView.as_view(), name='sentiment-analysis'),
+
+    # --- URL BARU UNTUK RINGKASAN KOMISI ---
+    path('reports/<int:report_id>/commission-summary/', CommissionSummaryView.as_view(), name='commission-summary'),
 ]

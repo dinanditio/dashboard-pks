@@ -29,7 +29,6 @@ class Issue(models.Model):
     tags = models.ManyToManyField(Tag, related_name='issues_tagged')
 
     class Meta:
-        # Ensures issue numbers are unique within each report
         unique_together = ('report', 'issue_number')
         ordering = ['issue_number']
 
@@ -53,3 +52,18 @@ class KeyPoint(models.Model):
 
     def __str__(self):
         return self.text[:50]
+
+class CommissionIssueSummary(models.Model):
+    report = models.ForeignKey(Report, related_name='commission_summaries', on_delete=models.CASCADE)
+    commission_name = models.CharField(max_length=100)
+    # Fields changed to TextField to allow longer text
+    issue_1_title = models.TextField(blank=True, null=True)
+    issue_2_title = models.TextField(blank=True, null=True)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        unique_together = ('report', 'commission_name')
+        ordering = ['order', 'commission_name']
+
+    def __str__(self):
+        return f"{self.commission_name} - {self.report.title}"
