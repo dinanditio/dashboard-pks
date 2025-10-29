@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 import os
 from pathlib import Path
+import dj_database_url  # <-- 1. IMPORT BARU DITAMBAHKAN DI SINI
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -88,9 +89,10 @@ TEMPLATES = [
 WSGI_APPLICATION = 'dashboard_api.wsgi.application'
 
 
-# Database
+# --- 2. BAGIAN DATABASE YANG DIMODIFIKASI ---
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+# Ini adalah database default (sqlite3) untuk development lokal
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -98,12 +100,23 @@ DATABASES = {
     }
 }
 
+# Cek jika kita di Render dan ada Environment Variable 'DATABASE_URL'
+DATABASE_URL_RENDER = os.environ.get('DATABASE_URL')
+if DATABASE_URL_RENDER:
+    # Jika ada, ganti konfigurasi database 'default' untuk menggunakan PostgreSQL.
+    DATABASES['default'] = dj_database_url.config(
+        default=DATABASE_URL_RENDER,
+        conn_max_age=600,
+        ssl_require=True  # PostgreSQL di Render mewajibkan SSL
+    )
+# --- AKHIR MODIFIKASI DATABASE ---
+
 
 # --- CORS CONFIGURATION (FIXES THE NETWORKERROR) ---
 # This tells your backend which frontend domains are allowed to make requests.
 CORS_ALLOWED_ORIGINS = [
     "https://medmontim.vercel.app", # <-- URL ANDA YANG BARU
-    "http://localhost:3000",             # Untuk development lokal
+    "http://localhost:3000",       # Untuk development lokal
 ]
 
 
@@ -133,3 +146,4 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
