@@ -5,7 +5,12 @@ from .models import Report, Issue, KeyPoint, Stakeholder, Tag, CommissionIssueSu
 # Inline untuk KeyPoint di halaman Issue
 class KeyPointInline(admin.TabularInline):
     model = KeyPoint
+    # extra = 1: Menampilkan 1 baris kosong tambahan secara default
     extra = 1
+    # max_num = None: PENTING! Ini memastikan TIDAK ADA batas maksimal jumlah poin
+    max_num = None
+    # can_delete = True: Agar poin bisa dihapus
+    can_delete = True
     fields = ('text', 'sentiment')
 
 @admin.register(Issue)
@@ -16,6 +21,8 @@ class IssueAdmin(admin.ModelAdmin):
     search_fields = ('title',)
     inlines = [KeyPointInline]
     filter_horizontal = ('stakeholders', 'tags')
+    # Menambahkan tombol save di bagian atas juga untuk kemudahan
+    save_on_top = True
 
 @admin.register(Report)
 class ReportAdmin(admin.ModelAdmin):

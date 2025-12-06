@@ -92,6 +92,10 @@ WSGI_APPLICATION = 'dashboard_api.wsgi.application'
 # --- 2. BAGIAN DATABASE YANG DIMODIFIKASI ---
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+# --- PENGATURAN DATABASE SEMENTARA UNTUK MIGRASI ---
+# JANGAN PERNAH PUSH KODE INI KE GIT
+# --- KEMBALIKAN KE PENGATURAN DATABASE YANG BENAR ---
+
 # Ini adalah database default (sqlite3) untuk development lokal
 DATABASES = {
     'default': {
@@ -109,6 +113,8 @@ if DATABASE_URL_RENDER:
         conn_max_age=600,
         ssl_require=True  # PostgreSQL di Render mewajibkan SSL
     )
+# --- AKHIR DARI PENGATURAN DATABASE YANG BENAR ---
+# --- AKHIR BAGIAN SEMENTARA ---
 # --- AKHIR MODIFIKASI DATABASE ---
 
 
