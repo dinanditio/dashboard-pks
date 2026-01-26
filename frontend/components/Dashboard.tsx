@@ -134,21 +134,22 @@ export default function Dashboard() {
       
       {/* --- HEADER (Optimized for Mobile) --- */}
       <header className="bg-white sticky top-0 z-30 shadow-sm">
-        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 pt-4 pb-2 flex flex-col md:flex-row md:items-center justify-between gap-3">
-          {/* Judul */}
+        {/* Menambahkan 'items-center' pada parent agar di mobile rata tengah secara vertikal */}
+        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 pt-4 pb-2 flex flex-col md:flex-row items-center md:justify-between gap-3">
+          {/* Judul - Sudah rata tengah di mobile */}
           <div className="text-center md:text-left">
             <h1 className="text-lg md:text-2xl font-bold text-slate-800 leading-tight">
               Dashboard Isu Fraksi PKS
             </h1>
           </div>
 
-          {/* Dropdown Periode - Full Width di Mobile */}
-          <div className="w-full md:w-auto bg-slate-50 p-1 rounded-lg border border-gray-200 flex items-center">
-             <div className="relative w-full md:w-auto">
+          {/* Dropdown Periode - PERBAIKAN: Ditambahkan 'justify-center' untuk mobile */}
+          <div className="w-full md:w-auto bg-slate-50 p-1 rounded-lg border border-gray-200 flex items-center justify-center md:justify-start">
+             <div className="relative w-full md:w-auto max-w-xs"> {/* max-w-xs agar tidak terlalu lebar di HP */}
                 <select 
                   value={currentReport?.id || ''} 
                   onChange={handleReportChange}
-                  className="w-full md:min-w-[220px] appearance-none bg-transparent text-slate-700 text-sm font-semibold py-2 pl-3 pr-8 rounded focus:outline-none focus:ring-2 focus:ring-orange-500 cursor-pointer"
+                  className="w-full md:min-w-[220px] appearance-none bg-transparent text-slate-700 text-sm font-semibold py-2 pl-3 pr-8 rounded focus:outline-none focus:ring-2 focus:ring-orange-500 cursor-pointer text-center md:text-left"
                 >
                   {allReports.map((report) => (
                     <option key={report.id} value={report.id}>
@@ -169,7 +170,7 @@ export default function Dashboard() {
               <span className="text-xs font-bold text-slate-400 mr-2 py-1.5 flex-shrink-0 select-none">
                 FILTER:
               </span>
-              <div className="flex-1 overflow-x-auto whitespace-nowrap pb-1 min-w-0 [&::-webkit-scrollbar]:h-0 [&::-webkit-scrollbar]:hidden"> {/* Hide scrollbar for cleaner look on mobile */}
+              <div className="flex-1 overflow-x-auto whitespace-nowrap pb-1 min-w-0 [&::-webkit-scrollbar]:h-0 [&::-webkit-scrollbar]:hidden">
                 <div className="flex items-center gap-2 pr-4">
                   <button onClick={() => setSelectedTag('Semua Tag')} className={`text-xs font-medium px-4 py-1.5 rounded-full transition-all border ${selectedTag === 'Semua Tag' ? 'bg-orange-600 text-white border-orange-600 shadow-sm' : 'bg-white text-slate-600 border-slate-200'}`}>
                     Semua
@@ -203,19 +204,16 @@ export default function Dashboard() {
                     <Fade key={issue.issue_number} direction="up" triggerOnce>
                       <article className="flex flex-col bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
                         <div className="p-5">
-                          {/* HEADER KARTU: Hanya Badge Isu */}
                           <div className="flex justify-between items-start mb-3">
                              <span className="bg-orange-100 text-orange-800 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wide">
                                 Isu #{issue.issue_number}
                              </span>
                           </div>
                           
-                          {/* JUDUL */}
                           <h3 className="font-bold text-lg text-slate-800 mb-3 leading-snug">
                             {issue.title}
                           </h3>
 
-                          {/* POIN-POIN */}
                           <ul className="space-y-2 mb-4">
                             {issue.key_points.map((point, idx) => (
                               <li key={idx} className={`text-sm text-slate-600 leading-relaxed pl-3 relative before:content-['•'] before:absolute before:left-0 ${point.sentiment === 'POSITIVE' ? 'before:text-green-500' : point.sentiment === 'NEGATIVE' ? 'before:text-red-500' : 'before:text-gray-400'}`}>
@@ -224,7 +222,7 @@ export default function Dashboard() {
                             ))}
                           </ul>
 
-                          {/* FOOTER KARTU: Tags dipindah ke sini agar tidak numpuk di atas */}
+                          {/* FOOTER KARTU: Tags */}
                           <div className="flex flex-wrap gap-2 pt-3 border-t border-gray-50">
                             {issue.tags.map(tag => (
                               <span key={tag.name} className="text-[10px] bg-slate-100 text-slate-500 px-2 py-1 rounded border border-slate-200 font-medium">
@@ -240,14 +238,15 @@ export default function Dashboard() {
               </div>
             </section>
 
-            {/* CHARTS */}
+            {/* CHARTS - PERBAIKAN OVERFLOW */}
             <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2 bg-white p-5 rounded-xl shadow-sm border border-gray-200">
                 <h3 className="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2">
                   <svg className="w-4 h-4 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"></path></svg>
                   Tren Topik
                 </h3>
-                <div className="h-64">
+                {/* PERBAIKAN: Gunakan w-full h-72 relative agar tidak tembus */}
+                <div className="w-full h-72 relative">
                    <TopTagsChart reportId={currentReport?.id || null}/>
                 </div>
               </div>
@@ -257,7 +256,8 @@ export default function Dashboard() {
                   <svg className="w-4 h-4 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                   Sentimen
                 </h3>
-                <div className="h-64 flex items-center justify-center">
+                 {/* PERBAIKAN: Gunakan w-full h-72 relative agar tidak tembus */}
+                <div className="w-full h-72 relative">
                   <SentimentChart reportId={currentReport?.id || null} />
                 </div>
               </div>
