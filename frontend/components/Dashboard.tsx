@@ -133,7 +133,6 @@ export default function Dashboard() {
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans relative">
       
       {/* --- HEADER --- */}
-      {/* UPDATE: Hapus 'sticky top-0' agar header ikut terscroll (tidak freeze) */}
       <header className="bg-white shadow-sm">
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 pt-4 pb-2 flex flex-col md:flex-row items-center md:justify-between gap-3">
           {/* Judul */}
@@ -238,28 +237,28 @@ export default function Dashboard() {
               </div>
             </section>
 
-            {/* CHARTS - PERBAIKAN OVERFLOW & RESPONSIVENESS */}
+            {/* CHARTS - UPDATE: Height & Padding lebih besar */}
             <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Chart Top Tags */}
-              <div className="lg:col-span-2 bg-white p-5 rounded-xl shadow-sm border border-gray-200 overflow-hidden"> {/* Added overflow-hidden */}
+              <div className="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                 <h3 className="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2">
                   <svg className="w-4 h-4 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"></path></svg>
                   Tren Topik
                 </h3>
-                {/* Fixed height dan width, serta relative agar Chart.js bisa resize dengan benar */}
-                <div className="relative w-full h-64 md:h-72">
+                {/* WADAH CHART: Tinggi fixed 400px agar chart lega di HP */}
+                <div className="relative w-full h-[400px] min-h-[350px]">
                    <TopTagsChart reportId={currentReport?.id || null}/>
                 </div>
               </div>
 
               {/* Chart Sentiment */}
-              <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-200 overflow-hidden"> {/* Added overflow-hidden */}
+              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                 <h3 className="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2">
                   <svg className="w-4 h-4 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                   Sentimen
                 </h3>
-                 {/* Fixed height dan width, serta relative agar Chart.js bisa resize dengan benar */}
-                <div className="relative w-full h-64 md:h-72 flex items-center justify-center">
+                 {/* WADAH CHART: Tinggi fixed 400px + flex center */}
+                <div className="relative w-full h-[400px] min-h-[350px] flex items-center justify-center">
                   <SentimentChart reportId={currentReport?.id || null} />
                 </div>
               </div>
