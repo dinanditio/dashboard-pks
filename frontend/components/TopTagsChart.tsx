@@ -15,8 +15,8 @@ const TopTagsChart = ({ reportId }: TopTagsChartProps) => {
   const [chartData, setChartData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Helper untuk memotong teks panjang agar rapi di HP
-  const truncateLabel = (label: string, maxLength: number = 15) => {
+  // Helper untuk memotong teks jika terlalu panjang agar tidak merusak layout kiri
+  const truncateLabel = (label: string, maxLength: number = 20) => {
     if (label.length > maxLength) {
       return label.substring(0, maxLength) + '...';
     }
@@ -27,24 +27,28 @@ const TopTagsChart = ({ reportId }: TopTagsChartProps) => {
     if (!reportId) return;
     const fetchTopTags = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/reports/${reportId}/top-tags/?limit=10`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/reports/${reportId}/tag-frequency/`);
         if (!res.ok) throw new Error('Gagal mengambil data topik');
+        
         const data = await res.json();
         
+        const extractedLabels = data.map((item: any) => item.name);
+        const extractedCounts = data.map((item: any) => item.count);
+        
         setChartData({
-          labels: data.labels,
+          labels: extractedLabels,
           datasets: [{
             label: 'Jumlah Isu',
-            data: data.counts,
-            backgroundColor: 'rgba(71, 85, 105, 0.8)', // Slate-600
-            hoverBackgroundColor: 'rgba(234, 88, 12, 0.9)', // Orange PKS
-            borderRadius: 4,
+            data: extractedCounts,
+            // Mengubah warna batang menjadi Oranye PKS dengan efek hover yang solid
+            backgroundColor: 'rgba(234, 88, 12, 0.85)', 
+            hoverBackgroundColor: 'rgba(234, 88, 12, 1)', 
+            borderRadius: 6,
             
-            // --- SETTING KEPADATAN CHART (Mobile Friendly) ---
-            // Angka mendekati 1.0 berarti semakin gemuk/rapat
-            barPercentage: 0.9,      
+            // Pengaturan ketebalan batang horizontal agar proporsional
+            barPercentage: 0.7,      
             categoryPercentage: 0.8, 
-            maxBarThickness: 50, // Batas maksimal di desktop agar tidak "raksasa"
+            maxBarThickness: 35, 
           }],
         });
       } catch (err: any) {
@@ -64,18 +68,21 @@ const TopTagsChart = ({ reportId }: TopTagsChartProps) => {
       <Bar
         data={chartData}
         options={{
+          // PENTING: Mengubah sumbu utama menjadi Y untuk membuat grafik horizontal (Top-Down)
+          indexAxis: 'y', 
           responsive: true,
-          maintainAspectRatio: false, // Wajib false agar mengikuti tinggi container
+          maintainAspectRatio: false, 
           layout: {
               padding: {
-                  top: 25, // Ruang untuk angka di atas batang
-                  left: 0,
-                  right: 0,
-                  bottom: 0
+                  top: 10, 
+                  left: 10,
+                  right: 35, // Ruang ekstra di sisi kanan agar angka datalabel tidak terpotong kontainer
+                  bottom: 10
               }
           },
           scales: {
-            y: {
+            x: {
+              // Sumbu X sekarang menjadi sumbu angka (linear)
               beginAtZero: true,
               border: { display: false },
               grid: {
@@ -83,21 +90,23 @@ const TopTagsChart = ({ reportId }: TopTagsChartProps) => {
               },
               ticks: {
                 stepSize: 1,
-                font: { size: 10 },
+                font: { size: 11 },
                 padding: 5
               }
             },
-            x: {
+            y: {
+              // Sumbu Y sekarang menjadi sumbu kategori teks (labels)
               border: { display: false },
               grid: {
-                display: false, // Bersih tanpa garis vertikal
+                display: false, // Bersih dari garis horizontal di dalam grafik
               },
               ticks: {
-                font: { size: 10 }, // Font kecil agar muat di HP
-                maxRotation: 45,    // Miringkan label
-                minRotation: 0,
-                autoSkip: false,    // Jangan sembunyikan label
-                // FITUR KHUSUS HP: Memotong label panjang
+                font: { 
+                  size: 11,
+                  weight: 'bold'
+                }, 
+                color: '#475569',
+                autoSkip: false,    
                 callback: function(value) {
                   const label = this.getLabelForValue(value as number);
                   return truncateLabel(label); 
@@ -108,22 +117,22 @@ const TopTagsChart = ({ reportId }: TopTagsChartProps) => {
           plugins: {
             legend: { display: false },
             datalabels: {
+              // Menempatkan angka indeks tepat di ujung kanan luar dari setiap batang horizontal
               anchor: 'end',
-              align: 'top',
-              color: '#64748b',
+              align: 'right',
+              color: '#1e293b', 
               font: {
                 weight: 'bold',
-                size: 11
+                size: 12
               },
               formatter: (value) => value
             },
             tooltip: {
-                backgroundColor: 'rgba(0,0,0,0.8)',
-                padding: 10,
-                cornerRadius: 4,
+                backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                padding: 12,
+                cornerRadius: 6,
                 displayColors: false,
                 callbacks: {
-                  // Tampilkan judul lengkap saat ditekan lama (tooltip)
                   title: (tooltipItems) => {
                     return tooltipItems[0].label; 
                   }

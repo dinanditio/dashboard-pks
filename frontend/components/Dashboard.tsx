@@ -138,7 +138,7 @@ export default function Dashboard() {
           {/* Judul */}
           <div className="text-center md:text-left">
             <h1 className="text-lg md:text-2xl font-bold text-slate-800 leading-tight">
-              Dashboard Isu Fraksi PKS
+              Dashboard Isu Mingguan Fraksi PKS DPR RI
             </h1>
           </div>
 
@@ -165,17 +165,17 @@ export default function Dashboard() {
       
         {/* --- FILTER BAR --- */}
         <div className="bg-white pb-2">
-            <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 flex items-start border-t border-gray-100 pt-2">
-              <span className="text-xs font-bold text-slate-400 mr-2 py-1.5 flex-shrink-0 select-none">
+            <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 flex items-start border-t border-gray-100 pt-3">
+              <span className="text-xs font-bold text-slate-400 mr-2 py-1.5 flex-shrink-0 select-none mt-1">
                 FILTER:
               </span>
-              <div className="flex-1 overflow-x-auto whitespace-nowrap pb-1 min-w-0 [&::-webkit-scrollbar]:h-0 [&::-webkit-scrollbar]:hidden">
+              <div className="flex-1 overflow-x-auto whitespace-nowrap pb-2 min-w-0 no-scrollbar">
                 <div className="flex items-center gap-2 pr-4">
-                  <button onClick={() => setSelectedTag('Semua Tag')} className={`text-xs font-medium px-4 py-1.5 rounded-full transition-all border ${selectedTag === 'Semua Tag' ? 'bg-orange-600 text-white border-orange-600 shadow-sm' : 'bg-white text-slate-600 border-slate-200'}`}>
+                  <button onClick={() => setSelectedTag('Semua Tag')} className={`text-xs font-medium px-4 py-1.5 rounded-full transition-all border ${selectedTag === 'Semua Tag' ? 'bg-orange-600 text-white border-orange-600 shadow-sm' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}>
                     Semua
                   </button>
                   {allTags.map(tag => (
-                    <button key={tag} onClick={() => setSelectedTag(selectedTag === tag ? 'Semua Tag' : tag)} className={`text-xs font-medium px-4 py-1.5 rounded-full transition-all border ${selectedTag === tag ? 'bg-orange-600 text-white border-orange-600 shadow-sm' : 'bg-white text-slate-600 border-slate-200'}`}>
+                    <button key={tag} onClick={() => setSelectedTag(selectedTag === tag ? 'Semua Tag' : tag)} className={`text-xs font-medium px-4 py-1.5 rounded-full transition-all border ${selectedTag === tag ? 'bg-orange-600 text-white border-orange-600 shadow-sm' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}>
                       {tag}
                     </button>
                   ))}
@@ -237,7 +237,7 @@ export default function Dashboard() {
               </div>
             </section>
 
-            {/* CHARTS - UPDATE: Height & Padding lebih besar */}
+            {/* CHARTS */}
             <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Chart Top Tags */}
               <div className="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-gray-200 overflow-hidden">
@@ -245,7 +245,6 @@ export default function Dashboard() {
                   <svg className="w-4 h-4 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"></path></svg>
                   Tren Topik
                 </h3>
-                {/* WADAH CHART: Tinggi fixed 400px agar chart lega di HP */}
                 <div className="relative w-full h-[400px] min-h-[350px]">
                    <TopTagsChart reportId={currentReport?.id || null}/>
                 </div>
@@ -257,7 +256,6 @@ export default function Dashboard() {
                   <svg className="w-4 h-4 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                   Sentimen
                 </h3>
-                 {/* WADAH CHART: Tinggi fixed 400px + flex center */}
                 <div className="relative w-full h-[400px] min-h-[350px] flex items-center justify-center">
                   <SentimentChart reportId={currentReport?.id || null} />
                 </div>
@@ -280,7 +278,7 @@ export default function Dashboard() {
         <div className="max-w-screen-xl mx-auto px-4 text-center">
           <p className="text-sm font-bold text-slate-700">Dashboard Isu Mingguan</p>
           <p className="text-[10px] text-slate-400 mt-2">
-            © {new Date().getFullYear()} Tim Media Monitoring.
+            © Ringkasan Isu Mingguan Fraksi PKS DPR RI. Dashboard ini dirancang untuk menampilkan analisis isu harian secara dinamis.
           </p>
         </div>
       </footer>

@@ -1,7 +1,6 @@
 @import "tailwindcss";
 
 :root {
-  /* Memaksa warna terang (Light Mode) sebagai default */
   --background: #ffffff;
   --foreground: #171717;
 }
@@ -13,13 +12,18 @@
   --font-mono: var(--font-geist-mono);
 }
 
-/* SAYA MENGHAPUS BLOK @media (prefers-color-scheme: dark) DI SINI */
-/* Agar website tidak otomatis berubah gelap mengikuti settingan HP */
-
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
-  /* Tambahan untuk smooth scrolling di mobile */
   scroll-behavior: smooth; 
+}
+
+/* Kelas baru untuk menyembunyikan scrollbar horizontal */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
