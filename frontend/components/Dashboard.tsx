@@ -102,6 +102,24 @@ export default function Dashboard() {
     .filter((value, index, self) => self.indexOf(value) === index)
     .sort() || [];
 
+  // Logika untuk mengelompokkan laporan berdasarkan Bulan dan Tahun, serta menghitung Minggu
+  const groupedReports = allReports.reduce((acc, report) => {
+    const date = new Date(report.start_date);
+    const monthYear = date.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+    
+    // Menghitung minggu ke berapa dalam bulan tersebut
+    const weekNumber = Math.ceil(date.getDate() / 7);
+    
+    let group = acc.find(g => g.monthYear === monthYear);
+    if (!group) {
+      group = { monthYear, reports: [] };
+      acc.push(group);
+    }
+    
+    group.reports.push({ ...report, weekLabel: `Minggu ${weekNumber}` });
+    return acc;
+  }, [] as { monthYear: string, reports: (ReportInfo & { weekLabel: string })[] }[]);
+
   if (error) return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 text-center bg-slate-50">
       <h2 className="text-xl font-bold text-slate-800 mb-2">Terjadi Kesalahan</h2>
@@ -150,10 +168,14 @@ export default function Dashboard() {
                   onChange={handleReportChange}
                   className="w-full md:min-w-[220px] appearance-none bg-transparent text-slate-700 text-sm font-semibold py-2 pl-3 pr-8 rounded focus:outline-none focus:ring-2 focus:ring-orange-500 cursor-pointer text-center md:text-left"
                 >
-                  {allReports.map((report) => (
-                    <option key={report.id} value={report.id}>
-                      {formatDateShort(report.start_date)} - {formatDateShort(report.end_date)}
-                    </option>
+                  {groupedReports.map((group) => (
+                    <optgroup key={group.monthYear} label={group.monthYear} className="font-bold text-slate-800 bg-slate-50">
+                      {group.reports.map((report) => (
+                        <option key={report.id} value={report.id} className="font-medium text-slate-600 bg-white">
+                          {report.weekLabel} - {group.monthYear}
+                        </option>
+                      ))}
+                    </optgroup>
                   ))}
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-500">
